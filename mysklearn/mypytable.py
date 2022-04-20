@@ -156,7 +156,7 @@ class MyPyTable:
         Notes:
             Use the csv module.
         """
-        with open(filename, 'w') as csvfile:
+        with open(filename, 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerow(self.column_names)
             csvwriter.writerows(self.data)

@@ -287,3 +287,28 @@ def group_by(table, header, groupby_col_name):
         group_subtables[groupby_val_subtable_index].append(row.copy()) # make a copy
     
     return group_names, group_subtables
+
+def get_frequencies(table, header, col_name):
+    """A second get_frequencies function for cols with unknown domains
+    
+        Args:
+            table (list of list): the 2D list of data
+            header (list of str): header for the table
+            col_name (str): name of the desired column
+        Returns:
+            values (list of objects): lists the domain of the column
+            counts (list(int)): list of number of times each type of value occured (parallel to values)
+    """
+    col = get_column(table, header, col_name)
+    # parallel lists
+    values = []
+    counts = []
+    for value in col:
+        if value in values: # seen it before
+            index = values.index(value)
+            counts[index] += 1
+        else: # haven't seen it before
+            values.append(value)
+            counts.append(1)
+
+    return values, counts 

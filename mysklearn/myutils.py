@@ -229,9 +229,61 @@ def print_confusion_matrix(header, matrix, class_labels):
     print(tabulate(matrix, headers=new_header, showindex=class_labels))
 
 def get_columns(table, header, col_names):
+    """returns the columns with the given names
+
+        Args:
+            table (list of list): the 2D list of data
+            header (list of str): header for the table
+            col_name (list of str): names of the desired columns
+        Returns: 
+            cols (list of list): a table with only the columns for the specified attributes.
+    """
     col_indexes = [header.index(name) for name in col_names]
     cols = []
     for row in table:
         new_row = [row[index] for index in col_indexes]
         cols.append(new_row)
     return cols
+
+def get_column(table, header, col_name):
+    """Returns column with the given name
+
+        Args:
+            table (list of list): the 2D list of data
+            header (list of str): header for the table
+            col_name (str): name of the desired column
+        Returns: 
+            col (list): the list of values in the specified column
+    """
+    col_index = header.index(col_name)
+    col = []
+    for row in table:
+        value = row[col_index]
+        if value != "NA":
+            col.append(value)
+    return col 
+
+def group_by(table, header, groupby_col_name):
+    """A second groupby function for unknown domains
+
+        Args:
+            table (list of list): the 2D list of data
+            header (list of str): header for the table
+            groupby_col_name (str): name of the group by column
+        Returns: 
+            group_names (list of str): the set of classification
+            group_subtables (list of list of obj): instances pertaining to each classification
+                (parallel to group_names)
+    """
+    groupby_col_index = header.index(groupby_col_name) # use this later
+    groupby_col = get_column(table, header, groupby_col_name)
+    group_names = sorted(list(set(groupby_col))) # e.g. [75, 76, 77]
+    group_subtables = [[] for _ in group_names] # e.g. [[], [], []]
+    
+    for row in table:
+        groupby_val = row[groupby_col_index] # e.g. this row's modelyear
+        # which subtable does this row belong?
+        groupby_val_subtable_index = group_names.index(groupby_val)
+        group_subtables[groupby_val_subtable_index].append(row.copy()) # make a copy
+    
+    return group_names, group_subtables

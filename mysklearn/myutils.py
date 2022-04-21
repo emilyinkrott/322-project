@@ -35,6 +35,37 @@ def compute_slope_intercept(x, y):
     b = mean_y - m * mean_x
     return m, b
 
+def compute_slope_intercept_plot(x, y):
+    mean_x = sum(x) / len(x)
+    mean_y = sum(y) / len(y)
+
+    num = sum([(x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))])
+    den = sum([(x[i] - mean_x) ** 2 for i in range(len(x))])
+    m = num / den 
+    # y = mx + b => b = y - mx 
+    b = mean_y - m * mean_x
+    return m, b 
+
+def compute_correlation_coefficient(x, y):
+    mean_x = sum(x) / len(x)
+    mean_y = sum(y) / len(y)
+
+    num = sum([(x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))])
+    den = (sum([(x[i] - mean_x) ** 2 for i in range(len(x))]) * \
+           sum([(y[i] - mean_y) ** 2 for i in range(len(y))])) ** 0.5
+
+    return num/den
+
+def compute_covariance(x, y):
+    mean_x = sum(x) / len(x)
+    mean_y = sum(y) / len(y)
+
+    num = sum([(x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))])
+    den = len(x)
+
+    return num/den
+
+
 def compute_euclidean_distance(v1, v2):
     """Computes euclidean distance between values.
 

@@ -90,39 +90,6 @@ def discretize_high_low(vals):
 
     return discretized
 
-def discretize_mpg_ratings(vals):
-    """Discretizes mpg values into Department of Energy ratings.
-
-        Args:
-            vals (list of numeric values): list of mpgs to discretize
-
-        Returns:
-            discretized (list(int)): list of discretized values parallel to vals
-    """
-    discretized = []
-    for val in vals:
-        if val <= 13:
-            discretized.append(1)
-        elif val == 14:
-            discretized.append(2)
-        elif 15 <= val <= 16:
-            discretized.append(3)
-        elif 17 <= val <= 19:
-            discretized.append(4)
-        elif 20 <= val <= 23:
-            discretized.append(5)
-        elif 24 <= val <= 26:
-            discretized.append(6)
-        elif 27 <= val <= 30:
-            discretized.append(7)
-        elif 31 <= val <= 36:
-            discretized.append(8)
-        elif 37 <= val <= 44:
-            discretized.append(9)
-        else:
-            discretized.append(10)
-
-    return discretized
 
 def get_frequencies(values):
     """Finds the frequencies of each value in a set
@@ -263,7 +230,7 @@ def get_column(table, header, col_name):
             col.append(value)
     return col 
 
-def group_by(table, header, groupby_col_name):
+def group_by_col_name(table, header, groupby_col_name):
     """A second groupby function for unknown domains
 
         Args:
@@ -288,7 +255,7 @@ def group_by(table, header, groupby_col_name):
     
     return group_names, group_subtables
 
-def get_frequencies(table, header, col_name):
+def get_frequencies_by_col_name(table, header, col_name):
     """A second get_frequencies function for cols with unknown domains
     
         Args:

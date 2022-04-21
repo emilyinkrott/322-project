@@ -227,3 +227,11 @@ def print_confusion_matrix(header, matrix, class_labels):
         matrix[i] = row + [total, round(recognized, 3)]
     new_header = header + ['Total', 'Recognition (%)']
     print(tabulate(matrix, headers=new_header, showindex=class_labels))
+
+def get_columns(table, header, col_names):
+    col_indexes = [header.index(name) for name in col_names]
+    cols = []
+    for row in table:
+        new_row = [row[index] for index in col_indexes]
+        cols.append(new_row)
+    return cols

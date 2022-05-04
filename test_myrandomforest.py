@@ -94,9 +94,11 @@ tree_3 = ["Attribute", "att2",
                 ]
             ]
         ]
+trees = [tree_1, tree_2, tree_3]
 
 def test_random_forest_fit():
-    np.random.seed(2)
+    #np.random.seed(2)
+    random_state = 2
     N = 3
     M = 2
     F = 2
@@ -105,13 +107,15 @@ def test_random_forest_fit():
     print(np.random.randint(0,4, size=F)) #tree 3 will use tweets and phd
 
     rf = MyRandomForestClassifier(N, M, F)
-    rf.fit(X_train, y_train)
+    rf.fit(X_train, y_train, 2)
     for tree in rf.random_forest:
         print(tree)
         print()
+        assert tree in trees
 
     assert False is True
 
 test_random_forest_fit()
+
 def test_random_forest_predict():
     assert False is True

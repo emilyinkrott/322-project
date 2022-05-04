@@ -350,12 +350,13 @@ class MyDecisionTreeClassifier:
             https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
         Terminology: instance = sample = row and attribute = feature = column
     """
-    def __init__(self):
+    def __init__(self, F=None):
         """Initializer for MyDecisionTreeClassifier.
         """
         self.X_train = None
         self.y_train = None
         self.tree = None
+        self.F = F
 
     def compute_priors_and_posteriors(self, instances):
         """Computes the "priors" and posteriors of a given instance. Note that the
@@ -440,6 +441,19 @@ class MyDecisionTreeClassifier:
         selected_attribute = attributes[e_news.index(min(e_news))]
         return selected_attribute
 
+    def select_attributes_for_forest(self, attribute_domains, instances, attributes):
+        """Selects an attribute to split using the lowest intropy attribute.
+        Args:
+            instances (list of list of obj): list of X_train instances
+            attributes (list of obj): list of availible attributes
+        Returns:
+            selected_attribute (obj): attribute with lowest entropy
+        """
+        random_attributes_indices = np.random.randint(len(attributes), self.F)
+        random_attribute_domains = [attribute_domains[i] for i in random_attributes_indices]
+        random_attributes = [attributes[i] for i in random_attributes_indices]
+        return self.select_attribute(random_attribute_domains, instances, random_attributes)
+
     def partition_instances(self, header, attribute_domains, instances, split_attribute):
         """Partition instances based on split_attribute
         Args:
@@ -487,7 +501,10 @@ class MyDecisionTreeClassifier:
             tree[list[list]]: the decision tree
         """
         # select an attribute to split on
-        attribute=self.select_attribute(attribute_domains, current_instances, available_attributes)
+        if self.F is None:
+            attribute = self.select_attribute(attribute_domains, current_instances, available_attributes)
+        else:
+            attribute = self.select_attributes_for_forest(attribute_domains, current_instances, available_attributes)
         available_attributes.remove(attribute)  # can't split on same att twice
         # this subtree
         tree = ["Attribute", attribute] # start to build tree
@@ -741,11 +758,7 @@ class MyRandomForestClassifier:
         X_test, y_test, X_remainder, y_remainder = self.random_stratified_test_set(X_train, y_train)
 
         # Step 2: generate N random trees using bootstrapping (giving a training and validation set)
-        #  over the remainder set
-            # NOTE: At each node, build your decision trees by randomly selecting F of the
-            # remaining attributes as candidates to partition on. Use entropy to choose which
-            # attribute to actually partition on. This will require a modified DecisionTreeClassifier
-
+        # over the remainder set
         # store trees and training/validation sets parallel to each other
         X_training_sets = []
         y_training_sets = []
@@ -761,7 +774,7 @@ class MyRandomForestClassifier:
             X_validation_sets.append(X_out_of_bag)
             y_validation_sets.append(y_out_of_bag)
             # make a (modified) decision tree
-            tree = MyDecisionTreeClassifier()   # TODO: Make a modified Decision Tree class
+            tree = MyDecisionTreeClassifier(F=self.F)
             tree.fit(X_sample, y_sample)
             forest.append(tree)
 

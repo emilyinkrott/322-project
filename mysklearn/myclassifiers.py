@@ -734,7 +734,6 @@ class MyRandomForestClassifier:
                 Use random_state to seed your random number generator
                     you can use the math module or use numpy for your generator
                     choose one and consistently use that generator throughout your code
-            shuffle(bool): whether or not to randomize the order of the instances before splitting
                 Shuffle the rows in X and y before splitting and be sure to maintain the parallel order
                 of X and y!!
 
@@ -752,9 +751,14 @@ class MyRandomForestClassifier:
         X_indices = [i for i in range(len(X))]
         np.random.seed(random_state)
 
+        X_copy = copy.deepcopy(X)
         # Split into test set
         group_names, group_subtables = myutils.group_by(X, y)   # Partition and group by classification
         group_index = 0   # the index of the current group to deal from
+
+        # shuffle for randomness
+        for subtable in group_subtables:
+            np.random.shuffle(subtable)
 
         for _ in range(int(len(X) * test_size)):
             while len(group_subtables[group_index]) == 0:
@@ -767,11 +771,11 @@ class MyRandomForestClassifier:
                     group_index += 1
                     
             # randomly choose instance to add to test set
-            rand_index = np.random.randint(0, len(group_subtables[group_index]))
-            instance = group_subtables[group_index].pop(rand_index)
-            print("instance:", instance)
-            print("index:", X.index(instance))
-            X_indices.remove(X.index(instance))
+            instance = group_subtables[group_index].pop(0)
+            # print("instance:", instance)
+            # print("index:", X_copy.index(instance))
+            X_indices.remove(X_copy.index(instance))
+            X_copy[X_copy.index(instance)] = []  # replace with empty string to avoid repeats
             X_test.append(instance)
             y_test.append(group_names[group_index])
 

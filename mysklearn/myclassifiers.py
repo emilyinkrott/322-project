@@ -819,7 +819,7 @@ class MyRandomForestClassifier:
         for i, tree in enumerate(forest):
             y_pred = []
             for instance in X_training_sets[i]:
-                y_pred.append(tree.predict([instance]))
+                y_pred.append(tree.predict(instance))
             accuracies.append(myevaluation.accuracy_score(y_validation_sets[i], y_pred))
         # Select top M trees
         pruned_forest = []

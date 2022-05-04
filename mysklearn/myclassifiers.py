@@ -238,7 +238,6 @@ class MyDummyClassifier:
                                                  p=list(self.label_frequencies.values()))
         return stratified_prediction
 
-
 class MyNaiveBayesClassifier:
     """Represents a Naive Bayes classifier.
 
@@ -715,6 +714,7 @@ class MyRandomForestClassifier:
         self.N = N
         self.M = M
         self.F = F
+        self.random_forest = None
 
     def random_stratified_test_set(self, X, y, remainder_size=0.66, random_state=0, shuffle=True):
         """Split dataset into test and remainder sets based on a remainser set size.
@@ -791,8 +791,18 @@ class MyRandomForestClassifier:
             max_tree_index = accuracies.index(max(accuracies))
             pruned_forest.append(forest.pop(max_tree_index))
 
+        self.random_forest = pruned_forest
 
     def predict(self, X_test):
         # TODO: Step 4: Use simple majority voting to predict classes using the M trees over the test set
+        votes = []
+        for tree in self.random_forest:
+            votes.append(tree.predict(X_test))
+        
+        majority_votes = []
+        for i in range(len(X_test)):
+            vals, counts = myutils.get_frequencies_by_col_name(votes, range(len(X_test)), i) # get number of votes for each label
+            majority_votes.append(vals[counts.index(max(counts))]) # get the majority vote and add the label to majority_votes
+        
+        return majority_votes
 
-        pass

@@ -1,8 +1,9 @@
 from mysklearn.myclassifiers import MyRandomForestClassifier
+import numpy as np
 
 # interview dataset
-header_interview = ["level", "lang", "tweets", "phd", "interviewed_well"]
-X_train_interview = [
+header = ["level", "lang", "tweets", "phd", "interviewed_well"]
+X_train = [
     ["Senior", "Java", "no", "no"],
     ["Senior", "Java", "no", "yes"],
     ["Mid", "Python", "no", "no"],
@@ -18,36 +19,25 @@ X_train_interview = [
     ["Mid", "Java", "yes", "no"],
     ["Junior", "Python", "no", "yes"]
 ]
-y_train_interview = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
+y_train = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
 
-# note: this tree uses the generic "att#" attribute labels because fit() does not and should not accept attribute names
-# note: the attribute values are sorted alphabetically
-tree_interview = \
-        ["Attribute", "att0",
-            ["Value", "Junior", 
-                ["Attribute", "att3",
-                    ["Value", "no", 
-                        ["Leaf", "True", 3, 5]
-                    ],
-                    ["Value", "yes", 
-                        ["Leaf", "False", 2, 5]
-                    ]
-                ]
-            ],
-            ["Value", "Mid",
-                ["Leaf", "True", 4, 14]
-            ],
-            ["Value", "Senior",
-                ["Attribute", "att2",
-                    ["Value", "no",
-                        ["Leaf", "False", 3, 5]
-                    ],
-                    ["Value", "yes",
-                        ["Leaf", "True", 2, 5]
-                    ]
-                ]
-            ]
-        ]
+def test_random_forest_fit():
+    np.random.seed(2)
+    N = 3
+    M = 2
+    F = 2
+    print(np.random.randint(0,4, size=F)) #tree 1 will use level and phd
+    print(np.random.randint(0,4, size=F)) #tree 2 will ue lang and level
+    print(np.random.randint(0,4, size=F)) #tree 3 will use tweets and phd
 
-X_test_N1M1F4 = [["Junior", "Java", "yes", "no"], ["Junior", "Java", "yes", "yes"]]
-y_test_N1M1F4 = ["True", "False"]
+    rf = MyRandomForestClassifier(N, M, F)
+    rf.fit(X_train, y_train)
+    for tree in rf.random_forest:
+        print(tree)
+        print()
+
+    assert False is True
+
+test_random_forest_fit()
+def test_random_forest_predict():
+    assert False is True

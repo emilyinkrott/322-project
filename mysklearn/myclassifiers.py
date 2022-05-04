@@ -9,6 +9,7 @@ Description: Implementation of 5 types of classifers: linear regression, kNN, Na
 """
 import operator
 import math
+from random import random
 import numpy as np
 
 from mysklearn import myutils, myevaluation
@@ -749,9 +750,11 @@ class MyRandomForestClassifier:
 
         return X_test, y_test, X_remainder, y_remainder
   
-    def fit(self, X_train, y_train):
+    def fit(self, X_train, y_train, random_state = None):
         self.X_train = X_train
         self.y_train = y_train
+        if random_state is not None:
+            np.random.seed(random_state)
 
         # Step 1: generate random stratified test set (1/3rd orignal set; 2/3rd remainder set)
         # TODO: finish writing the function called below
@@ -768,7 +771,7 @@ class MyRandomForestClassifier:
 
         for _ in range(self.N):
             # bootstrap remainder set
-            X_sample, X_out_of_bag, y_sample, y_out_of_bag = myevaluation.bootstrap_sample(X_remainder, y_remainder)
+            X_sample, X_out_of_bag, y_sample, y_out_of_bag = myevaluation.bootstrap_sample(X_remainder, y_remainder, random_state= random_state)
             X_training_sets.append(X_sample)
             y_training_sets.append(y_sample)
             X_validation_sets.append(X_out_of_bag)

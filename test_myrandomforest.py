@@ -21,7 +21,7 @@ X_train = [
 ]
 y_train = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
 
-# tree 1 uses attribute level and phd
+# tree 1 uses attributes level and phd
 tree_1 = ["Attribute", "att0",
             ["Value", "Junior", 
                 ["Attribute", "att3",
@@ -43,6 +43,29 @@ tree_1 = ["Attribute", "att0",
                     ],
                     ["Value", "yes",
                         ["Leaf", "False", 2, 5]
+                    ]
+                ]
+            ]
+        ]
+
+#tree 2 uses attributes level and lang
+tree_2 = ["Attribute", "att0",
+            ["Value", "Junior", 
+                ["Leaf", "True", 5, 14]
+            ],
+            ["Value", "Mid", 
+                ["Leaf", "True", 4, 14]
+            ],
+            ["Value", "Senior",
+                ["Attribute", "att1",
+                    ["Value", "Java",
+                        ["Leaf", "False", 2, 5]
+                    ],
+                    ["Value", "Python",
+                        ["Leaf", "False", 2, 5]
+                    ],
+                    ["Value", "R",
+                        ["Leaf", "True", 1, 5]
                     ]
                 ]
             ]

@@ -441,7 +441,7 @@ class MyDecisionTreeClassifier:
         selected_attribute = attributes[e_news.index(min(e_news))]
         return selected_attribute
 
-    def select_attributes_for_forest(self, attribute_domains, instances, attributes):
+    def compute_random_subset(self, attribute_domains, attributes):
         """Selects an attribute to split using the lowest intropy attribute.
         Args:
             instances (list of list of obj): list of X_train instances
@@ -452,7 +452,7 @@ class MyDecisionTreeClassifier:
         random_attributes_indices = np.random.randint(len(attributes), self.F)
         random_attribute_domains = [attribute_domains[i] for i in random_attributes_indices]
         random_attributes = [attributes[i] for i in random_attributes_indices]
-        return self.select_attribute(random_attribute_domains, instances, random_attributes)
+        return random_attribute_domains, random_attributes
 
     def partition_instances(self, header, attribute_domains, instances, split_attribute):
         """Partition instances based on split_attribute
@@ -504,7 +504,8 @@ class MyDecisionTreeClassifier:
         if self.F is None:
             attribute = self.select_attribute(attribute_domains, current_instances, available_attributes)
         else:
-            attribute = self.select_attributes_for_forest(attribute_domains, current_instances, available_attributes)
+            random_att_domains, random_atts = self.compute_random_subset(attribute_domains, available_attributes)
+            attribute = self.select_attribute(random_att_domains, current_instances, random_atts)
         available_attributes.remove(attribute)  # can't split on same att twice
         # this subtree
         tree = ["Attribute", attribute] # start to build tree
@@ -717,14 +718,14 @@ class MyRandomForestClassifier:
         self.F = F
         self.random_forest = None
 
-    def random_stratified_test_set(self, X, y, remainder_size=0.66, random_state=0, shuffle=True):
+    def random_stratified_test_set(self, X, y, test_size=0.33, random_state=0):
         """Split dataset into test and remainder sets based on a remainser set size.
 
         Args:
             X(list of list of obj): The list of samples
             y(list of obj): The target y values (parallel to X)
-            remainder_size(float or int): float for proportion of dataset to be in original test set
-                (e.g. 0.33 for a 2:1 split) 
+            test_size(float or int): float for proportion of dataset to be in test set
+                (e.g. 0.33 for a 1:2 split) 
             random_state(int): integer used for seeding a random number generator for reproducible
                 results
                 Use random_state to seed your random number generator
@@ -745,8 +746,41 @@ class MyRandomForestClassifier:
         X_remainder = []
         y_remainder = []
 
-        # TODO: perform stratefied split. Use code from myevaluation's train_test_split
-        # and stratefied k-fold cross validation for stratifying and splitting
+        X_indices = [i for i in range(len(X))]
+        if random_state is not None:
+            np.random.seed(random_state)
+
+        # Split into test set
+        group_names, group_subtables = myutils.group_by(X_indices, y)   # Partition and group by classification
+        group_index = 0   # the index of the current group to deal from
+
+        for _ in range(int(len(X) * test_size)):
+            while len(group_subtables[group_index]) == 0:
+                # no instances left in group, go to next non-empty group
+                if group_index >= len(group_subtables) - 1:
+                    # reset group iterate to 0
+                    group_index = 0
+                else:
+                    # deal from the next group
+                    group_index += 1
+                    
+            # randomly choose instance to add to test set
+            rand_index = np.random.randint(0, len(group_subtables[group_index]))
+            instance = group_subtables[group_index].pop(rand_index)
+            X_indices.remove(X.index(instance))
+            X_test.append(instance)
+            y_test.append(group_names[group_index])
+
+            # increment group index or wrap around
+            if group_index >= len(group_subtables) - 1:
+                group_index = 0
+            else:
+                group_index += 1
+
+        # Fill in remainder set with remaining indices
+        for index in X_indices:
+            X_remainder.append(X[index])
+            y_remainder.append(y[index])
 
         return X_test, y_test, X_remainder, y_remainder
   

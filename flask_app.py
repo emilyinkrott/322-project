@@ -21,29 +21,17 @@ def index():
 def predict():
     # parse the query string to get our 
     # instance attribute values from the client
-    f_id = request.args.get("First_pokemon","") #empty string is a default value
-    f_name = request.args.get("Name_first","")
-    f_type1 = request.args.get("Type_1_first","")
-    f_type2 = request.args.get("Type_2_first","")
-    f_gen = request.args.get("Generation_first","")
-    f_legend = request.args.get("Legendary_first","")
-    s_id = request.args.get("Second_pokemon","") #empty string is a default value
-    s_name = request.args.get("Name_second","")
-    s_type1 = request.args.get("Type_1_second","")
-    s_type2 = request.args.get("Type_2_second","")
-    s_gen = request.args.get("Generation_second","")
-    s_legend = request.args.get("Legendary_second","")
-    
-    hp = request.args.get("HP","")
-    attack = request.args.get("Attack","") #empty string is a default value
-    defense = request.args.get("Defense","")
-    sp_attack = request.args.get("Sp_Atk","")
-    sp_defense = request.args.get("Sp_Def","")
-    speed = request.args.get("Speed","")
+    hp = int(request.args.get("HP",""))
+    attack = int(request.args.get("Attack","")) #empty string is a default value
+    defense = int(request.args.get("Defense",""))
+    sp_attack = int(request.args.get("Sp_Atk",""))
+    sp_defense = int(request.args.get("Sp_Def",""))
+    speed = int(request.args.get("Speed",""))
 
 
     # TODO: fix the hard coding
-    prediction = predict_interviewed_well([f_id, f_name, f_type1, f_type2, f_gen, f_legend, s_id, s_name, s_type1, s_type2, s_gen, s_legend, hp, attack, defense, sp_attack, sp_defense, speed])
+    print(type(hp))
+    prediction = predict_interviewed_well([hp, attack, defense, sp_attack, sp_defense, speed])
     #if anything goes wrong in this function, it will return None.
 
     if prediction is not None:
@@ -63,16 +51,12 @@ def predict_interviewed_well(instance):
     header, nb = pickle.load(infile)
     infile.close()
     print(header, nb)
+    print(instance)
+
 
     try:
         prediction = nb.predict([instance])
-        if prediction[0] ==1:
-            return str(instance[0]) + ": " + instance[1]
-        elif prediction[0] ==2:
-            return str(instance[6]) + ": " + instance[7]
-        else:
-            print("error")
-            return None
+        return prediction
     except:
         print("error")
         return None
@@ -88,7 +72,7 @@ if __name__ == "__main__":
     # we are going to deploy as a docker container using heroku.yml and git.
     #get the port and environment variable
     port = os.environ.get("PORT", 5001)
-    app.run(debug=False, port=port, host="0.0.0.0") #TODO: turn debug off once it's deployed
+    app.run(debug=True, port=port, host="0.0.0.0") #TODO: turn debug off once it's deployed
 
 
 

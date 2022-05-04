@@ -22,18 +22,21 @@ import mysklearn.myevaluation
 importlib.reload(mysklearn.myevaluation)
 import mysklearn.myevaluation as myevaluation
 
-# pokemon stats
 filename = os.path.join("input_data", "pokemon_combats_advantage.csv")
-table = MyPyTable().load_from_file(filename)
-print(table.column_names)
-y_train = table.get_column("Winner")
-X_train = myutils.get_columns(table.data, table.column_names, table.column_names[:-1])
+new_table = MyPyTable().load_from_file(filename)
+
+stat_cols = ["HP","Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
+X_stats = myutils.get_columns(new_table.data, new_table.column_names, stat_cols)
+y = new_table.get_column("Winner")
+print(stat_cols)
+print(X_stats[0], y[0])
+
+
 nb = MyNaiveBayesClassifier()
 
-nb.fit(X_train, y_train)
+nb.fit(X_stats, y)
 
-packaged_obj = [table.column_names, nb]
+packaged_obj = [new_table.column_names, nb]
 outfile = open("nb.p", "wb") #file type doesn't really matter
-print(outfile)
 pickle.dump(packaged_obj, outfile)
 outfile.close()

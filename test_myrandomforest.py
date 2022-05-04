@@ -22,50 +22,37 @@ X_train = [
 y_train = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
 
 # tree 1 uses attributes level (att0) and phd (att3)
-tree_1 = ["Attribute", "att0",
-            ["Value", "Junior", 
-                ["Attribute", "att3",
-                    ["Value", "no",
-                        ["Leaf", "True", 3, 5]
-                    ],
-                    ["Value", "yes",
-                        ["Leaf", "False", 2, 5]
+tree_1 = ['Attribute', 'att0',
+            ['Value', 'Junior',
+                ['Attribute', 'att1',
+                    ['Value', 'Python',
+                            ['Leaf', 'True', 3, 4]
+                    ], 
+                    ['Value', 'R', 
+                        ['Leaf', 'False', 1, 4]
                     ]
                 ]
             ],
-            ["Value", "Mid", 
-                ["Leaf", "True", 4, 14]
+            ['Value', 'Mid',
+                ['Leaf', 'True', 4, 10]
             ],
-            ["Value", "Senior",
-                ["Attribute", "att3",
-                    ["Value", "no",
-                        ["Leaf", "False", 3, 5]
-                    ],
-                    ["Value", "yes",
-                        ["Leaf", "False", 2, 5]
-                    ]
-                ]
+            ['Value', 'Senior', 
+                ['Leaf', 'True', 2, 10]
             ]
         ]
 
 #tree 2 uses attributes level (att0) and lang (att1)
-tree_2 = ["Attribute", "att0",
-            ["Value", "Junior", 
-                ["Leaf", "True", 5, 14]
-            ],
-            ["Value", "Mid", 
-                ["Leaf", "True", 4, 14]
-            ],
-            ["Value", "Senior",
-                ["Attribute", "att1",
-                    ["Value", "Java",
-                        ["Leaf", "False", 2, 5]
+tree_2 = ['Attribute', 'att2',
+            ['Value', 'no', 
+                ['Leaf', 'True', 6, 10]
+            ], 
+            ['Value', 'yes', 
+                ['Attribute', 'att3', 
+                    ['Value', 'no', 
+                        ['Leaf', 'True', 2, 4]
                     ],
-                    ["Value", "Python",
-                        ["Leaf", "False", 2, 5]
-                    ],
-                    ["Value", "R",
-                        ["Leaf", "True", 1, 5]
+                    ['Value', 'yes', 
+                        ['Leaf', 'False', 2, 4]
                     ]
                 ]
             ]
@@ -106,16 +93,16 @@ def test_random_forest_fit():
     print(np.random.randint(0,4, size=F)) #tree 2 will ue lang and level
     print(np.random.randint(0,4, size=F)) #tree 3 will use tweets and phd
 
-    rf = MyRandomForestClassifier(N, M, F)
+    rf = MyRandomForestClassifier(N, M, F, random_state=2)
     rf.fit(X_train, y_train)
     for tree in rf.random_forest:
-        tree.print_decision_rules()
+        print(tree.tree)
         print()
+        # assert tree.tree in trees
+    
+    assert False is True
 
-
+test_random_forest_fit()
 
 def test_random_forest_predict():
     assert False is True
-
-if __name__ == "__main__":
-    test_random_forest_fit()

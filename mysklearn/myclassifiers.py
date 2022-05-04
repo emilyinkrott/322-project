@@ -7,6 +7,7 @@ Programming Assignment #7
 Description: Implementation of 5 types of classifers: linear regression, kNN, Naive Bayes, Dummy,
              and decision tree.
 """
+import copy
 import operator
 import math
 from random import random
@@ -768,6 +769,8 @@ class MyRandomForestClassifier:
             # randomly choose instance to add to test set
             rand_index = np.random.randint(0, len(group_subtables[group_index]))
             instance = group_subtables[group_index].pop(rand_index)
+            print("instance:", instance)
+            print("index:", X.index(instance))
             X_indices.remove(X.index(instance))
             X_test.append(instance)
             y_test.append(group_names[group_index])
@@ -802,7 +805,7 @@ class MyRandomForestClassifier:
         y_validation_sets = []
         forest = []
 
-        for _ in range(self.N):
+        for i in range(self.N):
             # bootstrap remainder set
             X_sample, X_out_of_bag, y_sample, y_out_of_bag = \
                 myevaluation.bootstrap_sample(X_remainder, y_remainder, random_state=self.random_state)
@@ -811,7 +814,7 @@ class MyRandomForestClassifier:
             X_validation_sets.append(X_out_of_bag)
             y_validation_sets.append(y_out_of_bag)
             # make a (modified) decision tree
-            tree = MyDecisionTreeClassifier(F=self.F, random_state=self.random_state)
+            tree = MyDecisionTreeClassifier(F=self.F, random_state=self.random_state + i)
             tree.fit(X_sample, y_sample)
             forest.append(tree)
         # Step 3: Select the M most accurate of the N trees using the corresponding validation sets

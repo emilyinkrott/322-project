@@ -111,12 +111,15 @@ def test_random_forest_fit():
     for tree in rf.random_forest:
         print(tree)
         print()
+        
 
 
 
     assert False is True
 
-test_random_forest_fit()
 
 def test_random_forest_predict():
     assert False is True
+
+if __name__ == "__main__":
+    test_random_forest_fit()

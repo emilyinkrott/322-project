@@ -442,7 +442,7 @@ class MyDecisionTreeClassifier:
         selected_attribute = attributes[e_news.index(min(e_news))]
         return selected_attribute
 
-    def compute_random_subset(self, attribute_domains, attributes):
+    def compute_random_subset(self, attributes):
         """Selects an attribute to split using the lowest intropy attribute.
         Args:
             instances (list of list of obj): list of X_train instances
@@ -452,9 +452,8 @@ class MyDecisionTreeClassifier:
         """
         np.random.seed(self.random_state)
         random_attributes_indices = np.random.randint(0, len(attributes), self.F)
-        random_attribute_domains = [attribute_domains[i] for i in random_attributes_indices]
         random_attributes = [attributes[i] for i in random_attributes_indices]
-        return random_attribute_domains, random_attributes
+        return random_attributes
 
     def partition_instances(self, header, attribute_domains, instances, split_attribute):
         """Partition instances based on split_attribute
@@ -506,8 +505,8 @@ class MyDecisionTreeClassifier:
         if self.F is None:
             attribute = self.select_attribute(attribute_domains, current_instances, available_attributes)
         else:
-            random_att_domains, random_atts = self.compute_random_subset(attribute_domains, available_attributes)
-            attribute = self.select_attribute(random_att_domains, current_instances, random_atts)
+            random_atts = self.compute_random_subset(available_attributes)
+            attribute = self.select_attribute(attribute_domains, current_instances, random_atts)
         available_attributes.remove(attribute)  # can't split on same att twice
         # this subtree
         tree = ["Attribute", attribute] # start to build tree

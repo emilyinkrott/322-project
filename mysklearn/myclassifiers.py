@@ -753,7 +753,7 @@ class MyRandomForestClassifier:
         np.random.seed(random_state)
 
         # Split into test set
-        group_names, group_subtables = myutils.group_by(X_indices, y)   # Partition and group by classification
+        group_names, group_subtables = myutils.group_by(X, y)   # Partition and group by classification
         group_index = 0   # the index of the current group to deal from
 
         for _ in range(int(len(X) * test_size)):

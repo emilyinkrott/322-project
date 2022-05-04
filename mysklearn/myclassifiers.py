@@ -541,7 +541,7 @@ class MyDecisionTreeClassifier:
                 classifiers, counts = myutils.get_frequencies(possible_classifiers)
                 majority_vote = classifiers[counts.index(max(counts))]
                 tree = ["Leaf", majority_vote, len(current_instances), 0]   # 0 is a placeholder
-
+                return tree
             else: # none of the previous conditions were true -> recurse
                 subtree = self.tdidt(header, attribute_domains, \
                                      att_partition, available_attributes.copy())

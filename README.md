@@ -18,6 +18,8 @@ Below you will find the schema of this repository:
     * __myutils.py__: Utility functions
 * __EDA.ipynb__: Exploratory data analysis of dataset attributes and feature selection.
 * __plot_utils.py__: Utility functions for plots and graphs
+* __flask_app.py__: Flask app to predict pokemon battles. Uses Naive Bayes classifier trained on pokemon base stats (Speed, Attack, Defense, Sp. Atk, Sp. Def)
+* __nb_pickler.py__: Pickler to store Naive Bayes predictions for Flask app.
 * __project_proposal.ipynb__: Proposal and introductory data collection.
 * __technical_report.ipynb__: Full technical analysis of dataset, feature selection, classifier performance comparison, and conclusive findings.
 * __test_classifiers.py__: Unit tests of all classifiers

@@ -21,7 +21,7 @@ X_train = [
 ]
 y_train = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
 
-# tree 1 uses attributes level and phd
+# tree 1 uses attributes level (att0) and phd (att3)
 tree_1 = ["Attribute", "att0",
             ["Value", "Junior", 
                 ["Attribute", "att3",
@@ -48,7 +48,7 @@ tree_1 = ["Attribute", "att0",
             ]
         ]
 
-#tree 2 uses attributes level and lang
+#tree 2 uses attributes level (att0) and lang (att1)
 tree_2 = ["Attribute", "att0",
             ["Value", "Junior", 
                 ["Leaf", "True", 5, 14]
@@ -71,7 +71,29 @@ tree_2 = ["Attribute", "att0",
             ]
         ]
 
-
+#tree 3 uses attributes tweets (att2) and phd (att3)
+tree_3 = ["Attribute", "att2",
+            ["Value", "no",
+                ["Attribute", "att3",
+                    ["Value", "no",
+                        ["Leaf", "False", 4, 7]
+                    ],
+                    ["Value", "yes", 
+                        ["Leaf", "False", 3, 7]
+                    ]
+                ]
+            ],
+            ["Value", "yes",
+                ["Attribute", "att3",
+                    ["Value", "no",
+                        ["Leaf", "True", 4, 7]
+                    ],
+                    ["Value", "yes", 
+                        ["Leaf", "True", 3, 7]
+                    ]
+                ]
+            ]
+        ]
 
 def test_random_forest_fit():
     np.random.seed(2)

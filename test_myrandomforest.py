@@ -111,9 +111,6 @@ def test_random_forest_fit():
     for tree in rf.random_forest:
         print(tree)
         print()
-        
-
-
 
     assert False is True
 

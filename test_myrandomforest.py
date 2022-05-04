@@ -109,13 +109,9 @@ def test_random_forest_fit():
     rf = MyRandomForestClassifier(N, M, F)
     rf.fit(X_train, y_train)
     for tree in rf.random_forest:
-        print(tree.tree)
+        tree.print_decision_rules()
         print()
-        
 
-
-
-    assert False is True
 
 
 def test_random_forest_predict():

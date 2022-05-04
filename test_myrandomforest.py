@@ -107,11 +107,12 @@ def test_random_forest_fit():
     print(np.random.randint(0,4, size=F)) #tree 3 will use tweets and phd
 
     rf = MyRandomForestClassifier(N, M, F)
-    rf.fit(X_train, y_train, 2)
+    rf.fit(X_train, y_train)
     for tree in rf.random_forest:
         print(tree)
         print()
-        assert tree in trees
+
+
 
     assert False is True
 

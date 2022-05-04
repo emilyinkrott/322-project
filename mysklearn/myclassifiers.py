@@ -11,7 +11,7 @@ import operator
 import math
 import numpy as np
 
-from mysklearn import myutils
+from mysklearn import myutils, myevaluation
 from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
 
 # pylint: disable=invalid-name
@@ -671,3 +671,115 @@ class MyDecisionTreeClassifier:
             attribute_names = [f"att{i}" for i in range(len(self.X_train[0]))]
         attributes, values = [], []
         self.build_rules(self.tree, attributes, values, attribute_names, class_name)
+
+class MyRandomForestClassifier:
+    """Represents a random forest classifier.
+
+    Attributes:
+        X_train(list of list of obj): The list of training instances (samples).
+                The shape of X_train is (n_train_samples, n_features)
+        y_train(list of obj): The target y values (parallel to X_train).
+            The shape of y_train is n_samples
+        N(int): The number of trees to generate
+        M(int): The number of most accurate trees to select
+        F(int): The number of random attributes to partition from
+
+
+    Notes:
+        Loosely based on sklearn's RandomForestClassifier:
+            https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+        Terminology: instance = sample = row and attribute = feature = column
+    """
+    def __init__(self, N=20, M=7, F=2):
+        """Initializer for MyDecisionTreeClassifier.
+        """
+        self.X_train = None
+        self.y_train = None
+        self.N = N
+        self.M = M
+        self.F = F
+
+    def random_stratified_test_set(self, X, y, remainder_size=0.66, random_state=0, shuffle=True):
+        """Split dataset into test and remainder sets based on a remainser set size.
+
+        Args:
+            X(list of list of obj): The list of samples
+            y(list of obj): The target y values (parallel to X)
+            remainder_size(float or int): float for proportion of dataset to be in original test set
+                (e.g. 0.33 for a 2:1 split) 
+            random_state(int): integer used for seeding a random number generator for reproducible
+                results
+                Use random_state to seed your random number generator
+                    you can use the math module or use numpy for your generator
+                    choose one and consistently use that generator throughout your code
+            shuffle(bool): whether or not to randomize the order of the instances before splitting
+                Shuffle the rows in X and y before splitting and be sure to maintain the parallel order
+                of X and y!!
+
+        Returns:
+            X_test(list of list of obj): The list of test samples
+            y_test(list of list of obj): The list of target y values samples (parallel to X_test)
+            X_remainder(list of obj): The list of remaining X values 
+            y_remainder(list of obj): The list of remaining target y values for testing (parallel to X_remainder)
+        """
+        X_test = []
+        y_test = []
+        X_remainder = []
+        y_remainder = []
+
+        # TODO: perform stratefied split. Use code from myevaluation's train_test_split
+        # and stratefied k-fold cross validation for stratifying and splitting
+
+        return X_test, y_test, X_remainder, y_remainder
+  
+    def fit(self, X_train, y_train):
+        self.X_train = X_train
+        self.y_train = y_train
+
+        # Step 1: generate random stratified test set (1/3rd orignal set; 2/3rd remainder set)
+        # TODO: finish writing the function called below
+        X_test, y_test, X_remainder, y_remainder = self.random_stratified_test_set(X_train, y_train)
+
+        # Step 2: generate N random trees using bootstrapping (giving a training and validation set)
+        #  over the remainder set
+            # NOTE: At each node, build your decision trees by randomly selecting F of the
+            # remaining attributes as candidates to partition on. Use entropy to choose which
+            # attribute to actually partition on. This will require a modified DecisionTreeClassifier
+
+        # store trees and training/validation sets parallel to each other
+        X_training_sets = []
+        y_training_sets = []
+        X_validation_sets = []
+        y_validation_sets = []
+        forest = []
+
+        for _ in range(self.N):
+            # bootstrap remainder set
+            X_sample, X_out_of_bag, y_sample, y_out_of_bag = myevaluation.bootstrap_sample(X_remainder, y_remainder)
+            X_training_sets.append(X_sample)
+            y_training_sets.append(y_sample)
+            X_validation_sets.append(X_out_of_bag)
+            y_validation_sets.append(y_out_of_bag)
+            # make a (modified) decision tree
+            tree = MyDecisionTreeClassifier()   # TODO: Make a modified Decision Tree class
+            tree.fit(X_sample, y_sample)
+            forest.append(tree)
+
+        # Step 3: Select the M most accurate of the N trees using the corresponding validation sets
+        accuracies = []
+        for i, tree in enumerate(forest):
+            y_pred = []
+            for instance in X_training_sets[i]:
+                y_pred.append(tree.predict(instance))
+            accuracies.append(myevaluation.accuracy_score(y_validation_sets[i], y_pred))
+        # Select top M trees
+        pruned_forest = []
+        for _ in range(self.M):
+            max_tree_index = accuracies.index(max(accuracies))
+            pruned_forest.append(forest.pop(max_tree_index))
+
+
+    def predict(self, X_test):
+        # TODO: Step 4: Use simple majority voting to predict classes using the M trees over the test set
+
+        pass

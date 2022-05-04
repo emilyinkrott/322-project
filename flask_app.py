@@ -23,22 +23,22 @@ def predict():
     # instance attribute values from the client
     f_id = request.args.get("First_pokemon","") #empty string is a default value
     f_name = request.args.get("Name_first","")
-    f_type1 = request.args.get("Type 1_first","")
-    f_type2 = request.args.get("Type 2_first","")
+    f_type1 = request.args.get("Type_1_first","")
+    f_type2 = request.args.get("Type_2_first","")
     f_gen = request.args.get("Generation_first","")
     f_legend = request.args.get("Legendary_first","")
     s_id = request.args.get("Second_pokemon","") #empty string is a default value
     s_name = request.args.get("Name_second","")
-    s_type1 = request.args.get("Type 1_second","")
-    s_type2 = request.args.get("Type 2_second","")
+    s_type1 = request.args.get("Type_1_second","")
+    s_type2 = request.args.get("Type_2_second","")
     s_gen = request.args.get("Generation_second","")
     s_legend = request.args.get("Legendary_second","")
     
     hp = request.args.get("HP","")
     attack = request.args.get("Attack","") #empty string is a default value
     defense = request.args.get("Defense","")
-    sp_attack = request.args.get("Sp. Atk","")
-    sp_defense = request.args.get("Sp. Def","")
+    sp_attack = request.args.get("Sp_Atk","")
+    sp_defense = request.args.get("Sp_Def","")
     speed = request.args.get("Speed","")
 
 
@@ -66,7 +66,13 @@ def predict_interviewed_well(instance):
 
     try:
         prediction = nb.predict([instance])
-        return prediction[0]
+        if prediction[0] ==1:
+            return str(instance[0]) + ": " + instance[1]
+        elif prediction[0] ==2:
+            return str(instance[6]) + ": " + instance[7]
+        else:
+            print("error")
+            return None
     except:
         print("error")
         return None

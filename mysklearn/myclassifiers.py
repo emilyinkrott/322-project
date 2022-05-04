@@ -806,7 +806,7 @@ class MyRandomForestClassifier:
             # bootstrap remainder set
             X_sample, X_out_of_bag, y_sample, y_out_of_bag = \
                 myevaluation.bootstrap_sample(X_remainder, y_remainder, random_state=self.random_state)
-            X_training_sets.append(X_sample)
+            X_training_sets.append([X_sample])
             y_training_sets.append(y_sample)
             X_validation_sets.append(X_out_of_bag)
             y_validation_sets.append(y_out_of_bag)

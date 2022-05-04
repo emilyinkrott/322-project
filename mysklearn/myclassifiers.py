@@ -782,4 +782,14 @@ class MyRandomForestClassifier:
 
     def predict(self, X_test):
         # TODO: Step 4: Use simple majority voting to predict classes using the M trees over the test set
-        pass
+        votes = []
+        for tree in self.random_forest:
+            votes.append(tree.predict(X_test))
+        
+        majority_votes = []
+        for i in range(len(X_test)):
+            vals, counts = myutils.get_frequencies_by_col_name(votes, range(len(X_test)), i) # get number of votes for each label
+            majority_votes.append(vals[counts.index(max(counts))]) # get the majority vote and add the label to majority_votes
+        
+        return majority_votes
+

@@ -451,7 +451,7 @@ class MyDecisionTreeClassifier:
             selected_attribute (obj): attribute with lowest entropy
         """
         np.random.seed(self.random_state)
-        random_attributes_indices = np.random.randint(len(attributes), self.F)
+        random_attributes_indices = np.random.randint(0, len(attributes), self.F)
         random_attribute_domains = [attribute_domains[i] for i in random_attributes_indices]
         random_attributes = [attributes[i] for i in random_attributes_indices]
         return random_attribute_domains, random_attributes

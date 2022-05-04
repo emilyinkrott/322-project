@@ -350,13 +350,14 @@ class MyDecisionTreeClassifier:
             https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
         Terminology: instance = sample = row and attribute = feature = column
     """
-    def __init__(self, F=None):
+    def __init__(self, F=None, random_state=0):
         """Initializer for MyDecisionTreeClassifier.
         """
         self.X_train = None
         self.y_train = None
         self.tree = None
         self.F = F
+        self.random_state = random_state
 
     def compute_priors_and_posteriors(self, instances):
         """Computes the "priors" and posteriors of a given instance. Note that the
@@ -449,6 +450,7 @@ class MyDecisionTreeClassifier:
         Returns:
             selected_attribute (obj): attribute with lowest entropy
         """
+        np.random.seed(self.random_state)
         random_attributes_indices = np.random.randint(len(attributes), self.F)
         random_attribute_domains = [attribute_domains[i] for i in random_attributes_indices]
         random_attributes = [attributes[i] for i in random_attributes_indices]
@@ -708,7 +710,7 @@ class MyRandomForestClassifier:
             https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
         Terminology: instance = sample = row and attribute = feature = column
     """
-    def __init__(self, N=20, M=7, F=2):
+    def __init__(self, N=20, M=7, F=2, random_state=0):
         """Initializer for MyDecisionTreeClassifier.
         """
         self.X_train = None
@@ -717,6 +719,7 @@ class MyRandomForestClassifier:
         self.M = M
         self.F = F
         self.random_forest = None
+        self.random_state = random_state
 
     def random_stratified_test_set(self, X, y, test_size=0.33, random_state=0):
         """Split dataset into test and remainder sets based on a remainser set size.
@@ -747,8 +750,7 @@ class MyRandomForestClassifier:
         y_remainder = []
 
         X_indices = [i for i in range(len(X))]
-        if random_state is not None:
-            np.random.seed(random_state)
+        np.random.seed(random_state)
 
         # Split into test set
         group_names, group_subtables = myutils.group_by(X_indices, y)   # Partition and group by classification
@@ -784,15 +786,13 @@ class MyRandomForestClassifier:
 
         return X_test, y_test, X_remainder, y_remainder
   
-    def fit(self, X_train, y_train, random_state = None):
+    def fit(self, X_train, y_train):
         self.X_train = X_train
         self.y_train = y_train
-        if random_state is not None:
-            np.random.seed(random_state)
 
         # Step 1: generate random stratified test set (1/3rd orignal set; 2/3rd remainder set)
-        # TODO: finish writing the function called below
-        X_test, y_test, X_remainder, y_remainder = self.random_stratified_test_set(X_train, y_train)
+        X_test, y_test, X_remainder, y_remainder = \
+            self.random_stratified_test_set(X_train, y_train, random_state=self.random_state)
 
         # Step 2: generate N random trees using bootstrapping (giving a training and validation set)
         # over the remainder set
@@ -805,13 +805,14 @@ class MyRandomForestClassifier:
 
         for _ in range(self.N):
             # bootstrap remainder set
-            X_sample, X_out_of_bag, y_sample, y_out_of_bag = myevaluation.bootstrap_sample(X_remainder, y_remainder, random_state= random_state)
+            X_sample, X_out_of_bag, y_sample, y_out_of_bag = \
+                myevaluation.bootstrap_sample(X_remainder, y_remainder, random_state=self.random_state)
             X_training_sets.append(X_sample)
             y_training_sets.append(y_sample)
             X_validation_sets.append(X_out_of_bag)
             y_validation_sets.append(y_out_of_bag)
             # make a (modified) decision tree
-            tree = MyDecisionTreeClassifier(F=self.F)
+            tree = MyDecisionTreeClassifier(F=self.F, random_state=self.random_state)
             tree.fit(X_sample, y_sample)
             forest.append(tree)
 
@@ -831,7 +832,7 @@ class MyRandomForestClassifier:
         self.random_forest = pruned_forest
 
     def predict(self, X_test):
-        # TODO: Step 4: Use simple majority voting to predict classes using the M trees over the test set
+        # Step 4: Use simple majority voting to predict classes using the M trees over the test set
         votes = []
         for tree in self.random_forest:
             votes.append(tree.predict(X_test))

@@ -814,13 +814,12 @@ class MyRandomForestClassifier:
             tree = MyDecisionTreeClassifier(F=self.F, random_state=self.random_state)
             tree.fit(X_sample, y_sample)
             forest.append(tree)
-
         # Step 3: Select the M most accurate of the N trees using the corresponding validation sets
         accuracies = []
         for i, tree in enumerate(forest):
             y_pred = []
             for instance in X_training_sets[i]:
-                y_pred.append(tree.predict(instance))
+                y_pred.append(tree.predict([instance]))
             accuracies.append(myevaluation.accuracy_score(y_validation_sets[i], y_pred))
         # Select top M trees
         pruned_forest = []

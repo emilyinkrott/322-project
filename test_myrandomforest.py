@@ -21,6 +21,35 @@ X_train = [
 ]
 y_train = ["False", "False", "True", "True", "True", "False", "True", "False", "True", "True", "True", "True", "True", "False"]
 
+# tree 1 uses attribute level and phd
+tree_1 = ["Attribute", "att0",
+            ["Value", "Junior", 
+                ["Attribute", "att3",
+                    ["Value", "no",
+                        ["Leaf", "True", 3, 5]
+                    ],
+                    ["Value", "yes",
+                        ["Leaf", "False", 2, 5]
+                    ]
+                ]
+            ],
+            ["Value", "Mid", 
+                ["Leaf", "True", 4, 14]
+            ],
+            ["Value", "Senior",
+                ["Attribute", "att3",
+                    ["Value", "no",
+                        ["Leaf", "False", 3, 5]
+                    ],
+                    ["Value", "yes",
+                        ["Leaf", "False", 2, 5]
+                    ]
+                ]
+            ]
+        ]
+
+
+
 def test_random_forest_fit():
     np.random.seed(2)
     N = 3
